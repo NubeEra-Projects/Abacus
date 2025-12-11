@@ -1,0 +1,85 @@
+/* GENERAL */
+body {
+    margin: 0;
+    font-family: Poppins, sans-serif;
+    background: #f2f2f2;
+}
+
+/* ---------- TOP BAR ---------- */
+#topBar {
+    width: 100%;
+    text-align: center;
+    padding-top: 10px;
+}
+
+#leaderboard {
+    display: inline-block;
+    padding: 15px 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #ccc;
+}
+
+#darkToggle {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    padding: 8px;
+}
+
+/* ---------- PANELS ---------- */
+#mainContainer {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 40px;
+}
+
+.panel {
+    width: 42%;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 10px #ccc;
+    text-align: center;
+}
+
+.question {
+    font-size: 5vw;
+    font-weight: bold;
+}
+
+/* ---------- SETTINGS BUTTON ---------- */
+#settingsBtn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    padding: 12px 18px;
+    font-size: 1.5rem;
+    border-radius: 50%;
+}
+
+/* ---------- MODAL POPUP ---------- */
+#settingsModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modalContent {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    width: 350px;
+}
+
+.mapRow {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+}
