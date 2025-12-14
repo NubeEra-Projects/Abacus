@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Two Panel Flash Card</title>
-    <link rel="stylesheet" href=".\css\style.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
 
-    <!-- TOP: Leaderboard & Dark Mode -->
+    <!-- TOP BAR: Leaderboard + Controls -->
     <header id="topBar">
         <div id="leaderboard">
             <h1>Leaderboard</h1>
             <div id="boardContent"></div>
         </div>
 
-        <button id="darkToggle">🌙</button>
+        <div class="controls">
+            <button id="settingsBtn">⚙ Settings</button>
+            <button id="darkToggle">🌙</button>
+        </div>
     </header>
 
     <!-- MAIN: Two Panels -->
@@ -32,7 +35,11 @@
             </div>
 
             <div class="question">Press A</div>
-            <div class="answer"></div>
+            <div class="answerInput">
+                <input type="text" class="answerField" placeholder="Type answer...">
+                <button class="submitBtn">Submit</button>
+            </div>
+            <div class="answerResult"></div>
             <div class="timer">00:00</div>
             <div class="status"></div>
         </div>
@@ -49,14 +56,15 @@
             </div>
 
             <div class="question">Press L</div>
-            <div class="answer"></div>
+            <div class="answerInput">
+                <input type="text" class="answerField" placeholder="Type answer...">
+                <button class="submitBtn">Submit</button>
+            </div>
+            <div class="answerResult"></div>
             <div class="timer">00:00</div>
             <div class="status"></div>
         </div>
     </main>
-
-    <!-- SETTINGS BUTTON -->
-    <button id="settingsBtn">⚙ Settings</button>
 
     <!-- SETTINGS MODAL -->
     <div id="settingsModal">

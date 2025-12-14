@@ -161,6 +161,34 @@ document.addEventListener("keydown", (e) => {
     if (e.key === keys.k2new) newQuestion(panel2);
     if (e.key === keys.k2ans) showAnswer(panel2);
 });
+
+// Add answer submission handlers
+function createAnswerHandler(panelId) {
+    const panel = panelId === 'panel1' ? panel1 : panel2;
+    const resultElem = document.querySelector(`#${panelId} .answerResult`);
+    const inputElem = document.querySelector(`#${panelId} .answerField`);
+    
+    return function() {
+        const userAnswer = parseFloat(inputElem.value);
+        
+        if (userAnswer === panel.answer) {
+            panel.marks++;
+            panel.marksElem.textContent = panel.marks;
+            resultElem.style.color = 'green';
+            resultElem.textContent = '✓ Correct! +1 point';
+            updateLeaderboard();
+        } else {
+            resultElem.style.color = 'red';
+            resultElem.textContent = `✗ Incorrect! Correct answer: ${panel.answer}`;
+        }
+        
+        inputElem.value = '';
+        setTimeout(() => resultElem.textContent = '', 3000);
+    };
+}
+
+document.querySelector('#panel1 .submitBtn').addEventListener('click', createAnswerHandler('panel1'));
+document.querySelector('#panel2 .submitBtn').addEventListener('click', createAnswerHandler('panel2'));
 // SETTINGS MODAL
 const modal = document.getElementById("settingsModal");
 document.getElementById("settingsBtn").onclick = () => modal.style.display = "flex";

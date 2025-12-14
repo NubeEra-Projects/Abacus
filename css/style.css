@@ -22,11 +22,12 @@ body {
     --primary-btn: #6aa8ff;
 }
 
-/* TOP BAR */
+/* TOP BAR: Flex layout for leaderboard + controls */
 #topBar {
-    width: 100%;
-    text-align: center;
-    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
 }
 
 #leaderboard {
@@ -37,10 +38,12 @@ body {
     box-shadow: 0 0 10px var(--shadow-color);
 }
 
-#darkToggle {
-    position: absolute;
-    right: 20px;
-    top: 20px;
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+#settingsBtn, #darkToggle {
     padding: 8px 15px;
     border-radius: 8px;
     border: none;
@@ -48,6 +51,10 @@ body {
     color: white;
     cursor: pointer;
     transition: transform 0.2s;
+}
+
+#settingsBtn:hover, #darkToggle:hover {
+    transform: scale(1.1);
 }
 
 #darkToggle:hover {
@@ -141,6 +148,33 @@ button:hover {
     border: 1px solid #ddd;
     background: var(--bg-color);
     color: var(--text-color);
+}
+
+.answerInput {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.answerField {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.submitBtn {
+    padding: 12px 20px;
+    border-radius: 8px;
+}
+
+.answerResult {
+    min-height: 30px;
+    margin: 10px 0;
+    font-weight: bold;
 }
 
 /* Progress bar */
