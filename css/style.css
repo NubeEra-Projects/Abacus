@@ -1,0 +1,160 @@
+/* GENERAL */
+:root {
+    --bg-color: #f2f2f2;
+    --text-color: #333;
+    --panel-bg: white;
+    --shadow-color: #ccc;
+    --primary-btn: #4a90e2;
+}
+
+body {
+    margin: 0;
+    font-family: Poppins, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+.dark-mode {
+    --bg-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --panel-bg: #2d2d2d;
+    --shadow-color: rgba(0,0,0,0.5);
+    --primary-btn: #6aa8ff;
+}
+
+/* TOP BAR */
+#topBar {
+    width: 100%;
+    text-align: center;
+    padding-top: 10px;
+}
+
+#leaderboard {
+    display: inline-block;
+    padding: 15px 25px;
+    background: var(--panel-bg);
+    border-radius: 12px;
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+#darkToggle {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: none;
+    background: var(--primary-btn);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#darkToggle:hover {
+    transform: scale(1.1);
+}
+
+/* PANELS */
+#mainContainer {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 40px;
+    gap: 20px;
+}
+
+.panel {
+    width: 42%;
+    padding: 25px;
+    background: var(--panel-bg);
+    border-radius: 15px;
+    box-shadow: 0 0 15px var(--shadow-color);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.panel:hover {
+    transform: translateY(-5px);
+}
+
+.question {
+    font-size: 5vw;
+    font-weight: bold;
+    margin: 20px 0;
+    color: var(--primary-btn);
+}
+
+/* BUTTONS */
+button {
+    background: var(--primary-btn);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+button:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+/* MODAL POPUP */
+#settingsModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: var(--panel-bg);
+    padding: 30px;
+    border-radius: 15px;
+    width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.mapRow {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.mapRow label {
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.mapRow input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Progress bar */
+.progressBox {
+    height: 10px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, #4a90e2, #6aa8ff);
+    width: 0%;
+    transition: width 0.5s ease;
+}
