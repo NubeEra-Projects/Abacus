@@ -2,7 +2,7 @@
 @import url('layout.css');
 @import url('progress.css');
 @import url('dark-mode.css');
-
+@import url('controls.css');
 
 :root {
     --bg-color: #f2f2f2;
@@ -36,20 +36,6 @@ button {
 button:hover {
     filter: brightness(1.1);
     box-shadow: 0 4px 8px var(--shadow-color);
-}
-
-/* Sound Toggle Button */
-#soundToggle {
-    background: transparent;
-    color: var(--primary-btn);
-    border: 2px solid var(--primary-btn);
-    padding: 8px 14px;
-    font-size: 13px;
-    border-radius: 20px;
-}
-
-#soundToggle:hover {
-    background: rgba(30, 144, 255, 0.1);
 }
 
 .answerInput {
@@ -100,77 +86,4 @@ button:hover {
     border: 1px solid #ddd;
     background: var(--bg-color);
     color: var(--text-color);
-}
-        .hint {
-            text-align: center;
-            opacity: 0.7;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .option {
-            padding: 18px;
-            font-size: 20px;    
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-    background: transparent;
-            color: white;
-    border: 2px solid #1e90ff;
-    transition: transform 0.1s ease, background 0.2s ease, color 0.2s ease;
-        }
-
-.option:hover {
-    background: rgba(30, 144, 255, 0.1);
-        }
-
-.option.correct {
-    background: #4CAF50;
-    color: white;
-    border-color: #4CAF50;
-        }
-
-.option.wrong {
-    background: #f44336;
-    color: white;
-    border-color: #f44336;
-}
-
-h3 {
-    margin-top: 25px;
-            text-align: center;
-        }
-
-#leaderboard {
-    list-style: none;
-    padding: 0;
-    font-size: 14px;
-    max-height: 120px;
-    overflow-y: auto;
-        }
-
-#leaderboard li {
-    padding: 6px;
-    border-bottom: 1px solid #ddd;
-}
-
-.answerResult {
-    min-height: 24px;
-    font-weight: bold;
-    text-align: center;
-    margin-top: 10px;
-    transition: opacity 0.3s ease;
-}
-
-.question {
-    font-size: 28px;
-    text-align: center;
-    margin: 10px 0;
 }

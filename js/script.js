@@ -230,9 +230,18 @@ function createAnswerHandler(panelId) {
             resultElem.style.color = 'green';
             resultElem.textContent = '✓ Correct! +1 point';
             updateLeaderboard();
+            
+            // Speak correct answer confirmation
+            if (typeof responsiveVoice !== 'undefined') {
+                responsiveVoice.speak(`Correct! The answer is ${panel.answer}`, "US English Female", {"pitch": 1, "rate": 1});
+            }
         } else {
             resultElem.style.color = 'red';
             resultElem.textContent = `✗ Incorrect! Correct answer: ${panel.answer}`;
+            // Speak correct answer
+            if (typeof responsiveVoice !== 'undefined') {
+                responsiveVoice.speak(`Incorrect. The correct answer is ${panel.answer}`, "US English Female", {"pitch": 1, "rate": 1});
+            }
         }
         
         inputElem.value = '';

@@ -1,0 +1,197 @@
+/* Microphone UI Styles */
+.micBtn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.micBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.micBtn.active {
+    background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+    animation: pulse 1.5s infinite;
+    box-shadow: 0 0 20px rgba(255, 65, 108, 0.5);
+}
+
+.micBtn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 65, 108, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 65, 108, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 65, 108, 0);
+    }
+}
+
+/* Speech bubble for recording status */
+.speech-bubble {
+    position: absolute;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+}
+
+.speech-bubble.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.speech-bubble:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: #667eea transparent transparent transparent;
+}
+
+/* Volume visualization */
+.volume-visualizer {
+    width: 100px;
+    height: 20px;
+    display: none;
+    margin-top: 10px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.volume-visualizer.active {
+    display: block;
+}
+
+.volume-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    width: 0%;
+    border-radius: 10px;
+    transition: width 0.1s ease;
+}
+
+/* Audio settings indicator */
+.audio-settings {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.audio-settings .speaker-icon {
+    color: #4CAF50;
+}
+
+.audio-settings .mic-icon {
+    color: #2196F3;
+}
+
+/* Voice status panel */
+.voice-status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-width: 300px;
+    display: none;
+}
+
+.voice-status.active {
+    display: block;
+}
+
+.voice-status h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 1rem;
+}
+
+.voice-status .status-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0;
+    font-size: 0.9rem;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+}
+
+.status-indicator.active {
+    background: #4CAF50;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Speech history panel */
+.speech-history {
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.speech-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 0.85rem;
+}
+
+.speech-item.correct {
+    color: #4CAF50;
+}
+
+.speech-item.incorrect {
+    color: #f44336;
+}
+
+.speech-item.recognition {
+    color: #2196F3;
+}
