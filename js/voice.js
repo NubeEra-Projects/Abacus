@@ -541,8 +541,16 @@ class VoiceAssistant {
         for (let i = event.resultIndex; i < event.results.length; i++) {
             if (event.results[i].isFinal) {
                 const transcript = event.results[i][0].transcript.trim().toLowerCase();
-                console.log('Recognized:', transcript);
+                const confidence = event.results[i][0].confidence;
+                console.log(`Recognized: "${transcript}" (confidence: ${confidence})`);
                 this.addToHistory('recognition', `Heard: "${transcript}"`);
+                
+                // Only process if confidence is reasonable or we're in continuous mode
+                if (confidence < 0.3 && !this.isContinuousMode) {
+                    console.log('Low confidence, ignoring:', transcript);
+                    this.showSpeechBubble(this.activePanel?.inputElem || document.activeElement, `Didn't catch that. Try again.`);
+                    return;
+                }
                 
                 // Process the answer
                 const answer = this.extractNumberFromSpeech(transcript);
@@ -550,17 +558,45 @@ class VoiceAssistant {
                     this.activePanel.inputElem.value = answer;
                     
                     // Show recognition feedback
-                    this.showSpeechBubble(this.activePanel.inputElem, `Recognized: ${answer}`);
+                    this.showSpeechBubble(this.activePanel.inputElem, `✓ Heard: ${answer}`);
                     
                     // Auto-submit after delay
                     setTimeout(() => {
                         checkAnswer(this.activePanel)();
-                        this.stopListening();
+                        // Don't stop listening in continuous mode
+                        if (!this.isContinuousMode) {
+                            this.stopContinuousListening();
+                        }
                     }, 800);
                 } else if (this.activePanel) {
-                    this.activePanel.resultElem.textContent = 'Could not understand the number. Please try again.';
-                    this.activePanel.resultElem.style.color = 'red';
-                    this.stopListening();
+                    // Couldn't extract a number - show helpful feedback
+                    const errorMessages = [
+                        'Try saying the number clearly',
+                        'Say just the number, like "fifteen"',
+                        'Try speaking louder or clearer',
+                        'Say the number again'
+                    ];
+                    const randomMessage = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+                    
+                    this.activePanel.resultElem.textContent = randomMessage;
+                    this.activePanel.resultElem.style.color = 'orange';
+                    
+                    // Show speech bubble with guidance
+                    this.showSpeechBubble(this.activePanel.inputElem, `Say a number like "12" or "twelve"`);
+                    
+                    // In continuous mode, clear the error after a delay
+                    if (this.isContinuousMode) {
+                        setTimeout(() => {
+                            if (this.activePanel) {
+                                this.activePanel.resultElem.textContent = '';
+                            }
+                        }, 2000);
+                    } else {
+                        // In single mode, stop listening
+                        setTimeout(() => {
+                            this.stopContinuousListening();
+                        }, 2000);
+                    }
                 }
             }
         }
@@ -616,36 +652,144 @@ class VoiceAssistant {
     }
 
     extractNumberFromSpeech(transcript) {
-        // Remove common filler words
-        const cleanTranscript = transcript.replace(/\b(please|the|answer|is|what|uh|um|er)\b/gi, '').trim();
+        console.log('Extracting number from:', transcript);
         
-        // Try to extract number directly
-        const numberMatch = cleanTranscript.match(/[-+]?[0-9]*\.?[0-9]+/);
-        if (numberMatch) {
-            return parseInt(numberMatch[0]);
+        // First, try to extract any number pattern
+        const numberPatterns = [
+            /(\d+)/, // Simple digits
+            /(\d+)\s*(point|\.)\s*(\d+)/, // Decimals
+            /minus\s+(\d+)/i, // Negative numbers
+            /negative\s+(\d+)/i // Negative numbers
+        ];
+        
+        // Check for "zero" explicitly
+        if (transcript.includes('zero') || transcript.includes('oh')) {
+            return 0;
         }
         
-        // Word to number mapping
-        const numberWords = {
-            'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4,
-            'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9,
-            'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13, 'fourteen': 14,
-            'fifteen': 15, 'sixteen': 16, 'seventeen': 17, 'eighteen': 18, 'nineteen': 19,
-            'twenty': 20, 'thirty': 30, 'forty': 40, 'fifty': 50,
-            'sixty': 60, 'seventy': 70, 'eighty': 80, 'ninety': 90
-        };
-        
-        // Split into words and convert
-        const words = cleanTranscript.toLowerCase().split(/\s+/);
-        let total = 0;
-        
-        for (const word of words) {
-            if (numberWords[word] !== undefined) {
-                total += numberWords[word];
+        // Try each pattern
+        for (const pattern of numberPatterns) {
+            const match = transcript.match(pattern);
+            if (match) {
+                if (pattern.toString().includes('minus') || pattern.toString().includes('negative')) {
+                    return -parseInt(match[1]);
+                } else if (pattern.toString().includes('point')) {
+                    return parseFloat(`${match[1]}.${match[3]}`);
+                } else {
+                    return parseInt(match[1]);
+                }
             }
         }
         
-        return total > 0 ? total : null;
+        // Word to number mapping with variations
+        const numberWords = {
+            // Basic numbers
+            'zero': 0, 'oh': 0, 'nil': 0, 'null': 0,
+            'one': 1, 'won': 1, 'first': 1,
+            'two': 2, 'to': 2, 'too': 2, 'second': 2,
+            'three': 3, 'tree': 3, 'third': 3,
+            'four': 4, 'for': 4, 'forth': 4, 'fourth': 4,
+            'five': 5, 'fifth': 5,
+            'six': 6, 'sicks': 6, 'sixth': 6,
+            'seven': 7, 'seventh': 7,
+            'eight': 8, 'ate': 8, 'eighth': 8,
+            'nine': 9, 'niner': 9, 'ninth': 9,
+            
+            // Teens
+            'ten': 10, 'tenth': 10,
+            'eleven': 11, 'eleventh': 11,
+            'twelve': 12, 'twelfth': 12,
+            'thirteen': 13, 'thirteenth': 13,
+            'fourteen': 14, 'fourteenth': 14,
+            'fifteen': 15, 'fifteenth': 15,
+            'sixteen': 16, 'sixteenth': 16,
+            'seventeen': 17, 'seventeenth': 17,
+            'eighteen': 18, 'eighteenth': 18,
+            'nineteen': 19, 'nineteenth': 19,
+            
+            // Tens
+            'twenty': 20, 'twentieth': 20,
+            'thirty': 30, 'thirtieth': 30,
+            'forty': 40, 'fourty': 40, 'fortieth': 40,
+            'fifty': 50, 'fiftieth': 50,
+            'sixty': 60, 'sixtieth': 60,
+            'seventy': 70, 'seventieth': 70,
+            'eighty': 80, 'eightieth': 80,
+            'ninety': 90, 'ninetieth': 90,
+            
+            // Combined numbers (like twenty-one)
+            'twenty one': 21, 'twenty two': 22, 'twenty three': 23, 'twenty four': 24, 'twenty five': 25,
+            'twenty six': 26, 'twenty seven': 27, 'twenty eight': 28, 'twenty nine': 29,
+            'thirty one': 31, 'thirty two': 32, 'thirty three': 33, 'thirty four': 34, 'thirty five': 35,
+            'thirty six': 36, 'thirty seven': 37, 'thirty eight': 38, 'thirty nine': 39,
+            'forty one': 41, 'forty two': 42, 'forty three': 43, 'forty four': 44, 'forty five': 45,
+            'forty six': 46, 'forty seven': 47, 'forty eight': 48, 'forty nine': 49,
+            'fifty one': 51, 'fifty two': 52, 'fifty three': 53, 'fifty four': 54, 'fifty five': 55,
+            'fifty six': 56, 'fifty seven': 57, 'fifty eight': 58, 'fifty nine': 59,
+            'sixty one': 61, 'sixty two': 62, 'sixty three': 63, 'sixty four': 64, 'sixty five': 65,
+            'sixty six': 66, 'sixty seven': 67, 'sixty eight': 68, 'sixty nine': 69,
+            'seventy one': 71, 'seventy two': 72, 'seventy three': 73, 'seventy four': 74, 'seventy five': 75,
+            'seventy six': 76, 'seventy seven': 77, 'seventy eight': 78, 'seventy nine': 79,
+            'eighty one': 81, 'eighty two': 82, 'eighty three': 83, 'eighty four': 84, 'eighty five': 85,
+            'eighty six': 86, 'eighty seven': 87, 'eighty eight': 88, 'eighty nine': 89,
+            'ninety one': 91, 'ninety two': 92, 'ninety three': 93, 'ninety four': 94, 'ninety five': 95,
+            'ninety six': 96, 'ninety seven': 97, 'ninety eight': 98, 'ninety nine': 99
+        };
+        
+        // Clean and normalize the transcript
+        let cleanTranscript = transcript.toLowerCase()
+            .replace(/[^\w\s]/g, ' ') // Remove punctuation
+            .replace(/\s+/g, ' ') // Normalize spaces
+            .trim();
+        
+        // Remove common filler words
+        const fillerWords = ['please', 'the', 'answer', 'is', 'what', 'uh', 'um', 'er', 'ah', 'like', 'okay', 'well'];
+        fillerWords.forEach(word => {
+            cleanTranscript = cleanTranscript.replace(new RegExp(`\\b${word}\\b`, 'g'), '');
+        });
+        cleanTranscript = cleanTranscript.replace(/\s+/g, ' ').trim();
+        
+        // Try exact match first
+        if (numberWords[cleanTranscript] !== undefined) {
+            return numberWords[cleanTranscript];
+        }
+        
+        // Try partial matches and sum
+        const words = cleanTranscript.split(' ');
+        let total = 0;
+        let lastNumber = 0;
+        
+        for (const word of words) {
+            if (numberWords[word] !== undefined) {
+                const currentNumber = numberWords[word];
+                
+                // Handle numbers like "twenty one" (20 + 1)
+                if (lastNumber >= 20 && lastNumber < 100 && lastNumber % 10 === 0 && currentNumber < 10) {
+                    total = total - lastNumber + (lastNumber + currentNumber);
+                } else {
+                    total += currentNumber;
+                }
+                lastNumber = currentNumber;
+            }
+        }
+        
+        // If we found any numbers, return the total
+        if (total > 0) {
+            return total;
+        }
+        
+        // Try to match number patterns like "twentyone" (without space)
+        const combinedMatch = cleanTranscript.match(/(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(one|two|three|four|five|six|seven|eight|nine)/);
+        if (combinedMatch) {
+            const tens = numberWords[combinedMatch[1]];
+            const ones = numberWords[combinedMatch[2]];
+            if (tens && ones) {
+                return tens + ones;
+            }
+        }
+        
+        console.log('No number found in transcript:', transcript);
+        return null;
     }
 
     speak(text) {
